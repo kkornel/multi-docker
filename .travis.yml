@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t korneldev/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true korneldev/client-test npm run test -- --coverage
+
+after_success:
+  - docker build -t korneldev/multi-client ./client
+  - docker build -t korneldev/multi-nginx ./ngnix
+  - docker build -t korneldev/multi-server ./server
+  - docker build -t korneldev/multi-worker ./worker
+  # Log in the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push korneldev/multi-client
+  - docker push korneldev/multi-nginx
+  - docker push korneldev/multi-server
+  - docker push korneldev/multi-worker
