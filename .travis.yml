@@ -10,7 +10,7 @@ script:
 
 after_success:
   - docker build -t korneldev/multi-client ./client
-  - docker build -t korneldev/multi-nginx ./ngnix
+  - docker build -t korneldev/multi-nginx ./nginx
   - docker build -t korneldev/multi-server ./server
   - docker build -t korneldev/multi-worker ./worker
   # Log in the docker CLI
